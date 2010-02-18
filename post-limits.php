@@ -84,3 +84,22 @@ function post_limits_page() {
 
 add_filter('user_has_cap', 'post_limits_check_capability');
 add_action('admin_menu', 'post_limits_menu'); 
+
+if (! defined('PHP_VERSION_ID')) {
+  $version = explode('.', PHP_VERSION);
+  define('PHP_VERSION_ID', ($version[0] * 10000 + $version[1] * 100 + $version[2]));
+}
+
+if (PHP_VERSION_ID < 50207) {
+  define('PHP_MAJOR_VERSION',   $version[0]);
+  define('PHP_MINOR_VERSION',   $version[1]);
+  define('PHP_RELEASE_VERSION', $version[2]);
+}
+if (PHP_MAJOR_VERSION < 5) {
+  function post_limits_version_warning() {
+    echo "<div id='countdown-to-warning' class='updated fade'>";
+    echo "<p><strong>" . __('WP Post Limits only tested on PHP5.2 and above. You are running PHP4 so the plugin may not work correctly') . "</strong></p>";
+    echo "</div>";
+  }
+  add_action('admin_notices', 'post_limits_version_warning');
+}
